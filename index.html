@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Minimal delimited continuations</title>
+      <link href="/admin.css" rel="stylesheet">
+      <link href="/list.css" rel="stylesheet">
+      <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+      <script crossorigin="anonymous" integrity="sha384-Ra6zh6uYMmH5ydwCqqMoykyf1T/+ZcnOQfFPhDrp2kI4OIxadnhsvvA2vv9A7xYv" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script></head>
+    <body>
+      <h1>SRFI 248: Minimal delimited continuations</h1>
+      <p class="authors">by Marc Nieper-Wißkirchen</p>
+      <p class="based-on"></p>
+      <p class="status">status: <em>draft</em> (2023-10-29)</p>
+      <p class="keywords">keywords: <a href="https://srfi.schemers.org/?keywords=continuations">Continuations</a></p><span class="see-also">See also <a href="/srfi-226/">SRFI 226: Control Features</a>.</span>
+      <ul class="info">
+        <li><a href="srfi-248.html">The SRFI Document</a></li>
+        <li><a href="https://srfi-email.schemers.org/srfi-248/">Discussion Archive</a></li>
+        <li><a href="https://github.com/scheme-requests-for-implementation/srfi-248">Git repo (on GitHub)</a></li>
+        <li><a href="mailto:srfi-248@srfi.schemers.org">srfi-248@<span class="antispam">nospam</span>srfi.schemers.org (subscribers only)</a></li>
+        <li><span class="firefox-column-workaround">
+            <form method="POST" action="https://www.simplelists.com/subscribe.php">
+              <div class="title">Subscribe to srfi-248 mailing list</div><input name="email" placeholder="email address" tabindex="1" type="email"><input name="name" placeholder="full name" tabindex="2" type="text">
+              <p><input id="sub-digest" name="digest" tabindex="3" type="checkbox" value="digest"><label for="sub-digest">daily digest?</label></p><input class="submit" name="submit" tabindex="4" type="submit" value="Subscribe to srfi-248"><input type="hidden" name="action" value="subscribe"><input type="hidden" name="list" value="srfi-248@srfi.schemers.org"></form></span></li>
+        <li><span class="firefox-column-workaround">
+            <form method="POST" action="https://www.simplelists.com/subscribe.php">
+              <div class="title">Unsubscribe from srfi-248 mailing list</div><input name="email" placeholder="email address" tabindex="5" type="email"><input class="submit" name="submit" tabindex="6" type="submit" value="Unsubscribe from srfi-248"><input type="hidden" name="action" value="unsubscribe"><input name="list" type="hidden" value="srfi-248@srfi.schemers.org"></form></span></li></ul>
+      <h2>Abstract</h2>    <p>       Scheme's exception system is extended so that exception handlers       gain access to the delimited continuation representing the rest       of the computation of the call of the thunk guarded by the       handler.  Algebraic effect handlers can be directly expressed in       this extended exception system.  The system directly implements       the <code>shift0</code>/<code>reset0</code> delimited control       operators.  It is well known that other delimited control       operators like <code>prompt0</code>/<code>control0</code> or       <code>reset</code>/<code>shift</code> are expressible       in <code>shift0</code>/<code>reset0</code> (and vice versa).     </p></body></html>
