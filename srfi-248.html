@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SRFI 248: Minimal delimited continuations</title>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"></head>
+  <body>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>248: Minimal delimited continuations</h1>
+
+    <p>by Marc Nieper-Wißkirchen</p>
+
+    <h2 id="status">Status</h2>
+
+    <p style="color: red;">For editor's use only.  Please do not edit this section.</p>
+
+    <p>??? the draft/final/withdrawn status of the SRFI, information on how
+      to subscribe to its mailing list, and important dates in its history.
+      The editor will add this section.</p>
+
+    <h2 id="abstract">Abstract</h2>
+
+    <p>
+      Scheme's exception system is extended so that exception handlers
+      gain access to the delimited continuation representing the rest
+      of the computation of the call of the thunk guarded by the
+      handler.  Algebraic effect handlers can be directly expressed in
+      this extended exception system.  The system directly implements
+      the shift0/reset0 delimited control operators.  It is well-known
+      that other delimited control operators like prompt0/control0 or
+      reset/shift are expressible in shift0/reset0 (and vice versa).
+    </p>
+
+    <h2 id="issues">Issues</h2>
+
+    <p>The name <code>with-exception-handler/k</code> is subject to
+    debate.  Regardless of the name, we expect most code to use
+    the <code>guard</code> convenience form.</p>
+
+    <h2 id="rationale">Rationale</h2>
+
+    <p>Scheme has been the first programming language with first-class
+      continuations.  Since their invention, it has become
+      increasingly clear that they do not provide the right
+      abstraction in many use cases but should be replaced by
+      delimited continuations, which only represent a portion of the
+      rest of the computation.  While delimited continuations are
+      becoming popular in other programming language, they still have
+      to find their way into a Scheme standard.
+    </p>
+
+    <p>
+      <a href="https://srfi.schemers.org/srfi-226/srfi-226.html">SRFI
+      226</a> is an extensive proposal to add many control structures,
+      including delimited continuations, in a coherent way to Scheme.
+      Due to its size and far-reaching consequences, it does, however,
+      place a burden not be underestimated on implementers of Scheme.
+      For a future standard comparable in size with R<sup>6</sup>RS or
+      R<sup>7</sup>RS, a minimal API supporting delimited
+      continuations can be more appropriate.  This SRFI proposes such
+      an API.  It integrates smoothly into the existing facilities by
+      hooking into Scheme's exception system and only comes with one
+      primitive procedure (and extends the existing <code>guard</code>
+      convenience syntax).
+
+    <p>
+      This SRFI dispenses with the idea of prompt tags as in other
+      systems for delimited continuation (but it is possible to
+      implement a delimited continuation system with prompt tags with
+      it).  If it were not for <code>call/cc</code>, the system could
+      dispense with <code>dynamic-wind</code>.
+    </p>
+
+    <h3>Examples</h3>
+
+    <p>In the following examples, we use the <code>guard</code>
+    syntax, which is a convenient syntactic abstraction over the
+    primitive <code>with-exception-handler/k</code> procedure.  Both
+    are defined in the <a href="#specification">specification
+    section</a>.</p>
+
+    <p>The following is a version
+      of <a href="https://srfi.schemers.org/srfi-158/srfi-158.html">SRFI
+        158</a>'s <code>make-coroutine-generator</code>, which does
+      prevent the space leaks inherent to the sample implementation
+      of SRFI 158, which uses <code>call/cc</code>.  This version, which uses delimited
+      continuations is also easier to understand.
+    </p>
+
+    <pre>(define make-coroutine-generator
+  (lambda (proc)
+    (define-condition-type &amp;yield &amp;condition
+      make-yield-condition yield-condition?
+      (value condition-value))
+    (define yield
+      (lambda (val)
+        (raise-continuable (make-yield-condition val))))
+    (define thunk
+      (lambda ()
+        (guard (c k
+                  [(yield-condition? c)
+                   (set! thunk k)
+                   (condition-value c)])
+          (proc yield)
+          (eof-object))))
+    (lambda ()
+      (thunk))))</pre>
+
+    <p>The next example shows how delimited continuations and the API
+    of this SRFI in particular can be used to transform a procedure
+    with <code>for-each</code>-like semantics describing an abstract
+    list into a procedure with <code>fold</code>-like semantics
+    describing the same abstract list.  Notably, the implementation
+    does not use state, which would be incompatible with the existence
+    of <code>call/cc</code>.
+
+    <pre>(define for-each->fold
+  (lambda (for-each)
+    (define-condition-type &amp;yield &amp;condition
+      make-yield-condition yield-condition?
+      (value condition-value))
+    (lambda (proc nil)
+      ((guard (c k
+                 [(yield-condition? c)
+                  (lambda (s)
+                    ((k) (proc s (condition-value c))))])
+         (for-each
+           (lambda (x)
+             (raise-continuable (make-yield-condition x))))
+         values)
+       nil))))</pre>
+
+    <p>More examples can be found in the <a href="tests.scm">bundled
+        test cases</a>.</p>
+
+    <h2 id="specification">Specification</h2>
+
+    <p>The following syntax and procedures are provided by the <code>(srfi
+        :248 exceptions)</code> and <code>(srfi :248)</code> libraries
+      (R<sup>6</sup>RS) and by the <code>(srfi 248)</code> library
+      (R<sup>7</sup>RS).</p>
+
+    <h3>Procedures</h3>
+
+    <p><code>(with-exception-handler/k</code> <var>handler</var> <var>thunk</var><code>)</code></p>
+
+    <p><var>Handler</var> must be a procedure and should accept two
+      arguments.  <var>Thunk</var> must be a procedure that accepts zero
+      arguments.  The <code>with-exception-handler/k</code> procedure
+      returns the results of invoking <var>thunk</var>.  An anonymous
+      handler is installed as the current exception handler for the
+      dynamic extent (as determined by <code>dynamic-wind</code>) of the
+      invocation of <var>thunk</var>.</p>
+
+    <p>When the anonymous handler is invoked on an
+      object <var>obj</var> as a result of a call
+      to <code>raise</code> or <code>raise-continuable</code>, it
+      packages the portion of the current continuation up to and
+      including the call to <code>with-exception-handler/k</code> that
+      installed the anonymous handler in a &ldquo;delimited
+      continuation procedure&rdquo; <var>k</var>.  It then
+      applies <var>handler</var> on <var>obj</var> and <var>k</var> in
+      the continuation and dynamic environment of the call
+      to <code>with-exception-handler/k</code>.</p>
+
+    <p>Implementation responsibilities (R<sup>6</sup>RS): The
+      implementation must check the restrictions on <var>handler</var>
+      to the extent performed by applying it as described when it is
+      called as a result of a call to <code>raise</code>
+      or <code>raise-continuable</code>.  An implementation may check
+      whether <code>handler</code> is an appropriate argument before
+      applying it.</p>
+
+    <p><code>(with-exception-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
+
+    This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.
+
+    <p><code>(raise</code> <var>obj</var><code>)</code></p>
+
+    This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.
+
+    <p><code>(raise-continuable</code> <var>obj</var><code>)</code></p>
+
+    This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.
+
+    <h3>Syntax</h3>
+
+    <p><code>(guard</code> (&langle;variable&rangle;
+    &langle;continuation variable&rangle; &langle;cond
+    clause<sub>1</sub>&rangle; &langle;cond clause<sub>1</sub>&rangle;
+    &hellip;<code>)</code> &langle;body&rangle;<code>)</code>
+      <br>
+      <code>=&gt;</code>
+      <br>
+      <code>else</code>
+    </p>
+
+    <p><i>Syntax:</i> &langle;Cond clause&rangle; is as in the
+      specification of <code>cond</code>.  <code>=&gt;</code>
+      and <code>else</code> are the same as in R<sup>6</sup>RS and
+      R<sup>7</sup>RS.
+    </p>
+
+    <p><i>Semantics:</i> Evaluating a guard form evaluates
+      &langle;body&rangle; with an anonymous exception handler that
+      packages the portion of the current continuation up to and
+      including the evaluation of the <code>guard</code> form in a
+      delimited continuation procedure.  It then binds the raised
+      exception to &langle;variable&rangle; and the captured delimited
+      continuation procedure to &langle;continuation variable&rangle;
+      and within the scope of that binding evaluates the clauses as if
+      they were the clauses of a <code>cond</code> expression.  The
+      implicit <code>cond</code> expression is evaluated within the
+      continuation and dynamic environment of the <code>guard</code>
+      expression.  If every &langle;cond clause&rangle;'s
+      &langle;test&rangle; evaluates to <code>#f</code> and there is
+      no <code>else</code> clause, then <code>raise-continuable</code>
+      is invoked on the raised object, and the captured delimited
+      continuation procedure applied on the values returned by the
+      call to <code>raise-continuable</code>.
+    </p>
+
+    <p>
+      The final expression in a &langle;cond clause&rangle;
+      is in a tail context if the <code>guard</code> expression itself is.
+    </p>
+
+    <p><code>(guard</code> (&langle;variable&rangle; &langle;cond clause<sub>1</sub>&rangle; &langle;cond clause<sub>1</sub>&rangle; &hellip;<code>)</code> &langle;body&rangle;<code>)</code></p>
+
+    <p>This syntactic form is the same as in R<sup>6</sup>RS (with errata
+      applied) and R<sup>7</sup>RS (with the tail context specification
+      as in R<sup>6</sup>RS).</p>
+
+    <h2 id="implementation">Implementation</h2>
+
+    <p>A portable implementation of delimited continuations (which
+      uses <code>call/cc</code> and global state) is only possible by
+      replacing the user-visible <code>call/cc</code>.
+      This is analogous to that <code>dynamic-wind</code> can be
+      implemented by using <code>call/cc</code> and global state, but
+      only by replacing the user-visible <code>call/cc</code>.
+    </p>
+
+    <p>This SRFI is implementable in any Scheme that supports any form
+      of delimited continuations compatible with <code>call/cc</code>
+      and <code>dynamic-wind</code>.  We provide a
+      <a href="lib/srfi/srfi-248.scm">a sample implementation for Guile</a>.</p>
+
+    <h2 id="acknowledgements">Acknowledgements</h2>
+
+    <p>Thanks to the members of the SRFI discussion group.</p>
+
+    <h2 id="copyright">Copyright</h2>
+    <p>&copy; 2023 Marc Nieper-Wißkirchen.</p>
+
+    <p>
+      Permission is hereby granted, free of charge, to any person
+      obtaining a copy of this software and associated documentation files
+      (the "Software"), to deal in the Software without restriction,
+      including without limitation the rights to use, copy, modify, merge,
+      publish, distribute, sublicense, and/or sell copies of the Software,
+      and to permit persons to whom the Software is furnished to do so,
+      subject to the following conditions:</p>
+
+    <p>
+      The above copyright notice and this permission notice (including the
+      next paragraph) shall be included in all copies or substantial
+      portions of the Software.</p>
+    <p>
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+      EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+      MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+      NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+      BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+      ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+      CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+      SOFTWARE.</p>
+
+    <hr>
+    <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
