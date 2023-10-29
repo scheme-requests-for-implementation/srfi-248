@@ -129,7 +129,13 @@
            (lambda (x)
              (raise-continuable (make-yield-condition x))))
          values)
-       nil))))</pre>
+       nil)))
+
+  (define string-fold
+    (lambda (proc seed s)
+      (define for-each-s (lambda (proc) (string-for-each proc s)))
+      (define fold-s (for-each->fold for-each-s))
+      (fold-s proc seed))))</pre>
 
     <p>More examples can be found in the <a href="tests.scm">bundled
         test cases</a>.</p>
