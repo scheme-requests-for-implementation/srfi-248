@@ -27,9 +27,11 @@
       of the computation of the call of the thunk guarded by the
       handler.  Algebraic effect handlers can be directly expressed in
       this extended exception system.  The system directly implements
-      the shift0/reset0 delimited control operators.  It is well-known
-      that other delimited control operators like prompt0/control0 or
-      reset/shift are expressible in shift0/reset0 (and vice versa).
+      the <code>shift0</code>/<code>reset0</code> delimited control
+      operators.  It is well known that other delimited control
+      operators like <code>prompt0</code>/<code>control0</code> or
+      <code>reset</code>/<code>shift</code> are expressible
+      in <code>shift0</code>/<code>reset0</code> (and vice versa).
     </p>
 
     <h2 id="issues">Issues</h2>
@@ -40,13 +42,13 @@
 
     <h2 id="rationale">Rationale</h2>
 
-    <p>Scheme has been the first programming language with first-class
+    <p>Scheme was the first programming language with first-class
       continuations.  Since their invention, it has become
       increasingly clear that they do not provide the right
-      abstraction in many use cases but should be replaced by
+      abstraction in many use cases, but should be replaced by
       delimited continuations, which only represent a portion of the
       rest of the computation.  While delimited continuations are
-      becoming popular in other programming language, they still have
+      becoming popular in other programming languages, they still have
       to find their way into a Scheme standard.
     </p>
 
@@ -58,9 +60,9 @@
       place a burden not be underestimated on implementers of Scheme.
       For a future standard comparable in size with R<sup>6</sup>RS or
       R<sup>7</sup>RS, a minimal API supporting delimited
-      continuations can be more appropriate.  This SRFI proposes such
+      continuations might be more appropriate.  This SRFI proposes such
       an API.  It integrates smoothly into the existing facilities by
-      hooking into Scheme's exception system and only comes with one
+      hooking into Scheme's exception system, and only comes with one
       primitive procedure (and extends the existing <code>guard</code>
       convenience syntax).
 
@@ -82,10 +84,10 @@
 
     <p>The following is a version
       of <a href="https://srfi.schemers.org/srfi-158/srfi-158.html">SRFI
-        158</a>'s <code>make-coroutine-generator</code>, which does
-      prevent the space leaks inherent to the sample implementation
+        158</a>'s <code>make-coroutine-generator</code> that
+      prevents the space leaks inherent to the sample implementation
       of SRFI 158, which uses <code>call/cc</code>.  This version, which uses delimited
-      continuations is also easier to understand.
+      continuations, is also easier to understand.
     </p>
 
     <pre>(define make-coroutine-generator
@@ -214,7 +216,7 @@
       including the evaluation of the <code>guard</code> form in a
       delimited continuation procedure.  It then binds the raised
       exception to &langle;variable&rangle; and the captured delimited
-      continuation procedure to &langle;continuation variable&rangle;
+      continuation procedure to &langle;continuation variable&rangle;,
       and within the scope of that binding evaluates the clauses as if
       they were the clauses of a <code>cond</code> expression.  The
       implicit <code>cond</code> expression is evaluated within the
@@ -223,7 +225,7 @@
       &langle;test&rangle; evaluates to <code>#f</code> and there is
       no <code>else</code> clause, then <code>raise-continuable</code>
       is invoked on the raised object, and the captured delimited
-      continuation procedure applied on the values returned by the
+      continuation procedure is applied to the values returned by the
       call to <code>raise-continuable</code>.
     </p>
 
@@ -243,7 +245,7 @@
     <p>A portable implementation of delimited continuations (which
       uses <code>call/cc</code> and global state) is only possible by
       replacing the user-visible <code>call/cc</code>.
-      This is analogous to that <code>dynamic-wind</code> can be
+      This is analogous to the fact that <code>dynamic-wind</code> can be
       implemented by using <code>call/cc</code> and global state, but
       only by replacing the user-visible <code>call/cc</code>.
     </p>
