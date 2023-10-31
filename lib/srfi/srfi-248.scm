@@ -22,11 +22,11 @@
 
 (define-module (srfi srfi-248)
   #:use-module ((rnrs exceptions) #:select ((guard . rnrs:guard)))
-  #:export (raise-continuable with-exception-handler/k guard)
+  #:export (raise-continuable with-unwind-handler guard)
   #:replace (raise)
   #:re-export (with-exception-handler => else))
 
-(define (with-exception-handler/k handler thunk)
+(define (with-unwind-handler handler thunk)
   (define tag (make-prompt-tag 'handler))
   (let f ([thunk thunk])
     (call-with-prompt tag
@@ -53,7 +53,7 @@
          b1 ... b2)
        (and (identifier? #'c)
             (identifier? #'k))
-       #'(with-exception-handler/k
+       #'(with-unwind-handler
              (lambda (c k)
                (cond cl ... [else e1 ... e2]))
            (lambda ()
@@ -62,7 +62,7 @@
          b1 ... b2)
        (and (identifier? #'c)
             (identifier? #'k))
-       #'(with-exception-handler/k
+       #'(with-unwind-handler
              (lambda (obj k)
                (let ([c obj])
                  (cond cl1 ... cl2

@@ -37,16 +37,14 @@
 
     <h2 id="issues">Issues</h2>
 
-    <p>The name <code>with-exception-handler/k</code> is subject to
-    debate.  Regardless of the name, we expect most code to use
-    the <code>guard</code> convenience form.</p>
+    <p>None at present.</p>
 
     <h2 id="rationale">Rationale</h2>
 
     <p>Scheme was the first programming language with first-class
       continuations.  Since their invention, it has become
       increasingly clear that they do not provide the right
-      abstraction in many use cases, but should be replaced by
+      abstraction in many use cases, but should be supplemented by
       delimited continuations, which only represent a portion of the
       rest of the computation.  While delimited continuations are
       becoming popular in other programming languages, they still have
@@ -79,7 +77,7 @@
 
     <p>In the following examples, we use the <code>guard</code>
     syntax, which is a convenient syntactic abstraction over the
-    primitive <code>with-exception-handler/k</code> procedure.  Both
+    primitive <code>with-unwind-handler</code> procedure.  Both
     are defined in the <a href="#specification">specification
     section</a>.</p>
 
@@ -152,11 +150,11 @@
 
     <h3>Procedures</h3>
 
-    <p><code>(with-exception-handler/k</code> <var>handler</var> <var>thunk</var><code>)</code></p>
+    <p><code>(with-unwind-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
     <p><var>Handler</var> must be a procedure and should accept two
       arguments.  <var>Thunk</var> must be a procedure that accepts zero
-      arguments.  The <code>with-exception-handler/k</code> procedure
+      arguments.  The <code>with-unwind-handler</code> procedure
       returns the results of invoking <var>thunk</var>.  An anonymous
       handler is installed as the current exception handler for the
       dynamic extent (as determined by <code>dynamic-wind</code>) of the
@@ -166,12 +164,12 @@
       object <var>obj</var> as a result of a call
       to <code>raise</code> or <code>raise-continuable</code>, it
       packages the portion of the current continuation up to and
-      including the call to <code>with-exception-handler/k</code> that
+      including the call to <code>with-unwind-handler</code> that
       installed the anonymous handler in a &ldquo;delimited
       continuation procedure&rdquo; <var>k</var>.  It then
       applies <var>handler</var> on <var>obj</var> and <var>k</var> in
       the continuation and dynamic environment of the call
-      to <code>with-exception-handler/k</code>.</p>
+      to <code>with-unwind-handler</code>.</p>
 
     <p>Implementation responsibilities (R<sup>6</sup>RS): The
       implementation must check the restrictions on <var>handler</var>
@@ -195,7 +193,7 @@
 
     <h3>Syntax</h3>
 
-    <p><code>(guard</code> (&langle;variable&rangle;
+    <p>(guard</code> (&langle;variable&rangle;
     &langle;continuation variable&rangle; &langle;cond
     clause<sub>1</sub>&rangle; &langle;cond clause<sub>1</sub>&rangle;
     &hellip;<code>)</code> &langle;body&rangle;<code>)</code>
@@ -218,7 +216,7 @@
       delimited continuation procedure.  It then binds the raised
       exception to &langle;variable&rangle; and the captured delimited
       continuation procedure to &langle;continuation variable&rangle;,
-      and within the scope of that binding evaluates the clauses as if
+      and within the scope of that bindings evaluates the clauses as if
       they were the clauses of a <code>cond</code> expression.  The
       implicit <code>cond</code> expression is evaluated within the
       continuation and dynamic environment of the <code>guard</code>
@@ -245,7 +243,7 @@
 
     <p>A portable implementation of delimited continuations (which
       uses <code>call/cc</code> and global state) is only possible by
-      replacing the user-visible <code>call/cc</code>.
+      at least replacing the user-visible <code>call/cc</code>.
       This is analogous to the fact that <code>dynamic-wind</code> can be
       implemented by using <code>call/cc</code> and global state, but
       only by replacing the user-visible <code>call/cc</code>.

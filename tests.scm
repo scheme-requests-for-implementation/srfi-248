@@ -6,51 +6,51 @@
 (test-begin "SRFI 248")
 
 (test-equal 1
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         obj)
     (lambda ()
       (raise 1))))
 
 (test-equal 2
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         obj)
     (lambda ()
       (raise-continuable 2))))
 
 (test-equal 3
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         (+ 1 obj))
     (lambda ()
-      (with-exception-handler/k
+      (with-unwind-handler
           (lambda (obj k)
             (raise (+ 1 obj)))
         (lambda ()
           (raise 1))))))
 
 (test-equal 4
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         (and (non-continuable-violation? obj)
              4))
     (lambda ()
-      (with-exception-handler/k
+      (with-unwind-handler
           (lambda (obj k)
             (k 2))
         (lambda ()
           (raise 1))))))
 
 (test-equal 5
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         (+ 2 (k (+ 3 obj))))
     (lambda ()
       (+ 1 (raise-continuable -1)))))
 
 (test-equal 6
-  (with-exception-handler/k
+  (with-unwind-handler
       (lambda (obj k)
         (+ 2 (k (k (+ 3 obj)))))
     (lambda ()
@@ -189,5 +189,5 @@
 (test-end)
 
 ;; Local Variables:
-;; eval: (put 'with-exception-handler/k 'scheme-indent-function 1)
+;; eval: (put 'with-unwind-handler 'scheme-indent-function 1)
 ;; End:
