@@ -196,15 +196,13 @@
 
     <h3>Syntax</h3>
 
-    <p><code>(guard</code> (&langle;variable&rangle;
-    &langle;continuation variable&rangle; &langle;cond
-    clause<sub>1</sub>&rangle; &langle;cond clause<sub>1</sub>&rangle;
-    &hellip;<code>)</code> &langle;body&rangle;<code>)</code>
-      <br>
-      <code>=&gt;</code>
-      <br>
-      <code>else</code>
-    </p>
+    <p style="white-space: pre"><code>(guard</code> (&langle;variable&rangle; &langle;continuation variable&rangle;
+		&langle;cond clause<sub>1</sub>&rangle;
+		&langle;cond clause<sub>1</sub>&rangle;
+    		&hellip;<code>)
+	</code> &langle;body&rangle;<code>)</code>
+<code>=&gt;</code>
+<code>else</code></p>
 
     <p><i>Syntax:</i> &langle;Cond clause&rangle; is as in the
       specification of <code>cond</code>.  <code>=&gt;</code>
@@ -236,7 +234,11 @@
       is in a tail context if the <code>guard</code> expression itself is.
     </p>
 
-    <p><code>(guard</code> (&langle;variable&rangle; &langle;cond clause<sub>1</sub>&rangle; &langle;cond clause<sub>1</sub>&rangle; &hellip;<code>)</code> &langle;body&rangle;<code>)</code></p>
+    <p style="white-space: pre"><code>(guard</code> (&langle;variable&rangle;
+		&langle;cond clause<sub>1</sub>&rangle;
+		&langle;cond clause<sub>1</sub>&rangle;
+		&hellip;<code>)
+	</code>&langle;body&rangle;<code>)</code></p>
 
     <p>This syntactic form is the same as in R<sup>6</sup>RS (with errata
       applied) and R<sup>7</sup>RS (with the tail context specification
