@@ -1,4 +1,6 @@
 
+# SPDX-FileCopyrightText: 2024 Arthur A. Gleckler
+# SPDX-License-Identifier: MIT
 * SRFI 248: Minimal delimited continuations
 
 ** by Marc Nieper-Wißkirchen
