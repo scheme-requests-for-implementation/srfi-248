@@ -156,12 +156,12 @@
     <p><code>(with-unwind-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
     <p><var>Handler</var> must be a procedure and should accept two
-      arguments.  <var>Thunk</var> must be a procedure that accepts zero
-      arguments.  The <code>with-unwind-handler</code> procedure
+      arguments.  <var>Thunk</var> must be a procedure that accepts
+      zero arguments.  The <code>with-unwind-handler</code> procedure
       returns the results of invoking <var>thunk</var>.  An anonymous
       handler is installed as the current exception handler for the
-      dynamic extent (as determined by <code>dynamic-wind</code>) of the
-      invocation of <var>thunk</var>.</p>
+      dynamic extent (as defined in R6RS) of the invocation
+      of <var>thunk</var>.</p>
 
     <p>When the anonymous handler is invoked on an
       object <var>obj</var> as a result of a call
@@ -217,10 +217,10 @@
       packages the portion of the current continuation up to and
       including the evaluation of the <code>guard</code> form in a
       delimited continuation procedure.  It then binds the raised
-      exception to &langle;variable&rangle; and the captured delimited
+      object to &langle;variable&rangle; and the captured delimited
       continuation procedure to &langle;continuation variable&rangle;,
-      and within the scope of that bindings evaluates the clauses as if
-      they were the clauses of a <code>cond</code> expression.  The
+      and within the scope of that bindings evaluates the clauses as
+      if they were the clauses of a <code>cond</code> expression.  The
       implicit <code>cond</code> expression is evaluated within the
       continuation and dynamic environment of the <code>guard</code>
       expression.  If every &langle;cond clause&rangle;'s
