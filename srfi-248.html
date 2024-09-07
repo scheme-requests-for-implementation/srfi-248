@@ -65,7 +65,7 @@
       continuations might be more appropriate.  This SRFI proposes
       such an API.  It integrates smoothly into the existing
       facilities by hooking into Scheme's exception system, and only
-      comes with one primitive procedure (and extends the
+      comes with one essential primitive procedure (and extends the
       existing <code>guard</code> convenience syntax).
 
     <p>
@@ -182,6 +182,15 @@
       whether <code>handler</code> is an appropriate argument before
       applying it.</p>
 
+    <p><code>(empty-continuation?</code> <var>k</var><code>)</code></p>
+
+    <p>The argument <var>k</var> should be a delimited continuation
+    procedure.  The <code>empty-continuation?</code> predicate
+    returns <code>#t</code> if <var>k</var> represents the empty
+    delimited continuation, that is, <var>k</var> is equivalent to
+    the <code>values</code> procedure, and <code>#f</code>,
+    otherwise.</p>
+
     <p><code>(with-exception-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
     This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.
@@ -256,8 +265,11 @@
 
     <p>This SRFI is implementable in any Scheme that supports any form
       of delimited continuations compatible with <code>call/cc</code>
-      and <code>dynamic-wind</code>.  We provide a
-      <a href="lib/srfi/srfi-248.scm">a sample implementation for Guile</a>.</p>
+      and <code>dynamic-wind</code> and where one can test for
+      equality of continuation procedures.  We provide a
+      <a href="lib/srfi/srfi-248.scm">a sample implementation for
+      Guile</a>, which is only missing
+      the <code>empty-continuation?</code> predicate.</p>
 
     <h2 id="acknowledgements">Acknowledgements</h2>
 
