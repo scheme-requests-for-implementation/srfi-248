@@ -191,6 +191,20 @@
     the <code>values</code> procedure, and <code>#f</code>,
     otherwise.</p>
 
+    <p>Example:</p>
+
+    <pre>(with-unwind-handler
+    (lambda (obj k)
+      (empty-continuation? k))
+  (lambda ()
+    (raise-continuable 42)))         ; &rArr; #t
+
+(with-unwind-handler
+    (lambda (obj k)
+      (empty-continuation? k))
+  (lambda ()
+    (not (raise-continuable 42))))   ; &rArr; #t</pre>
+
     <p><code>(with-exception-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
     This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.
