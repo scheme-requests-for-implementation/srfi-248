@@ -56,15 +56,17 @@
       <a href="https://srfi.schemers.org/srfi-226/srfi-226.html">SRFI
       226</a> is an extensive proposal to add many control structures,
       including delimited continuations, in a coherent way to Scheme.
-      Due to its size and far-reaching consequences, it does, however,
-      place a burden not be underestimated on implementers of Scheme.
-      For a future standard comparable in size with R<sup>6</sup>RS or
+      SRFI 226 also contains a rationale for delimited continuations
+      and provides many links to existing literature.  Due to its size
+      and far-reaching consequences, it does, however, place a burden
+      not be underestimated on implementers of Scheme.  For a future
+      standard comparable in size with R<sup>6</sup>RS or
       R<sup>7</sup>RS, a minimal API supporting delimited
-      continuations might be more appropriate.  This SRFI proposes such
-      an API.  It integrates smoothly into the existing facilities by
-      hooking into Scheme's exception system, and only comes with one
-      primitive procedure (and extends the existing <code>guard</code>
-      convenience syntax).
+      continuations might be more appropriate.  This SRFI proposes
+      such an API.  It integrates smoothly into the existing
+      facilities by hooking into Scheme's exception system, and only
+      comes with one primitive procedure (and extends the
+      existing <code>guard</code> convenience syntax).
 
     <p>
       This SRFI dispenses with the idea of prompt tags as in other
