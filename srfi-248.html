@@ -262,6 +262,12 @@
       is in a tail context if the <code>guard</code> expression itself is.
     </p>
 
+    <p>If a call to <code>raise-continuable</code> occurs in tail
+      context of the <code>body</code>, the delimited continuation
+      procedure bound to &langle;continuation variable&rangle;
+      represents the empty continuation.
+    </p>
+
     <p style="white-space: pre"><code>(guard</code> (&langle;variable&rangle;
 		&langle;cond clause<sub>1</sub>&rangle;
 		&langle;cond clause<sub>1</sub>&rangle;
