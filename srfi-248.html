@@ -186,11 +186,15 @@
     <p><code>(empty-continuation?</code> <var>k</var><code>)</code></p>
 
     <p>The argument <var>k</var> should be a delimited continuation
-    procedure.  The <code>empty-continuation?</code> predicate
-    returns <code>#t</code> if <var>k</var> represents the empty
-    delimited continuation, that is, <var>k</var> is equivalent to
-    the <code>values</code> procedure, and <code>#f</code>,
-    otherwise.</p>
+      procedure.  The <code>empty-continuation?</code> predicate
+      returns <code>#t</code> if <var>k</var> represents the empty
+      delimited continuation, that is, if <var>k</var> is the
+      delimited continuation argument of a handler invoked as a result
+      of a call to <code>raise-continuable</code> that occurs in tail
+      context of the thunk of the <code>with-unwind-handler</code>
+      expression that installed the handler.  If <var>k</var> does not
+      represent the empty delimited continuation, <code>#f</code> is
+      returned.</p>
 
     <p>Example:</p>
 
