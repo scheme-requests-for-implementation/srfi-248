@@ -67,7 +67,7 @@
       and far-reaching consequences, it does, however, place a burden
       not be underestimated on implementers of Scheme.  For a future
       standard comparable in size with R<sup>6</sup>RS or
-      R<sup>7</sup>RS, a minimal API supporting delimited
+      R<sup>7</sup>RS Small, a minimal API supporting delimited
       continuations might be more appropriate.  This SRFI proposes
       such an API.  It integrates smoothly into the existing
       facilities by hooking into Scheme's exception system, and only
@@ -155,7 +155,7 @@
     <p>The following syntax and procedures are provided by the <code>(srfi
         :248 exceptions)</code> and <code>(srfi :248)</code> libraries
       (R<sup>6</sup>RS) and by the <code>(srfi 248)</code> library
-      (R<sup>7</sup>RS).</p>
+      (R<sup>7</sup>RS Small).</p>
 
     <h3>Procedures</h3>
 
@@ -217,15 +217,15 @@
 
     <p><code>(with-exception-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
-    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.</p>
+    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS Small.</p>
 
     <p><code>(raise</code> <var>obj</var><code>)</code></p>
 
-    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.</p>
+    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS Small.</p>
 
     <p><code>(raise-continuable</code> <var>obj</var><code>)</code></p>
 
-    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS.</p>
+    <p>This procedure is the same as in R<sup>6</sup>RS and R<sup>7</sup>RS Small.</p>
 
     <h3>Syntax</h3>
 
@@ -240,7 +240,7 @@
     <p><i>Syntax:</i> &langle;Cond clause&rangle; is as in the
       specification of <code>cond</code>.  <code>=&gt;</code>
       and <code>else</code> are the same as in R<sup>6</sup>RS and
-      R<sup>7</sup>RS.
+      R<sup>7</sup>RS Small.
     </p>
 
     <p><i>Semantics:</i> Evaluating a guard form evaluates
@@ -280,7 +280,7 @@
 	</code>&langle;body&rangle;<code>)</code></p>
 
     <p>This syntactic form is the same as in R<sup>6</sup>RS (with errata
-      applied) and R<sup>7</sup>RS (with the tail context specification
+      applied) and R<sup>7</sup>RS Small (with the tail context specification
       as in R<sup>6</sup>RS).</p>
 
     <h2 id="implementation">Implementation</h2>
