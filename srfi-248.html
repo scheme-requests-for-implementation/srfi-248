@@ -54,14 +54,14 @@
       abstraction in many use cases, but should be supplemented by
       delimited continuations, which only represent a portion of the
       rest of the computation.  While delimited continuations are
-      becoming popular in other programming languages, they still have
+      becoming popular in other programming languages, they have yet
       to find their way into a Scheme standard.
     </p>
 
     <p>
       <a href="https://srfi.schemers.org/srfi-226/srfi-226.html">SRFI
       226</a> is an extensive proposal to add many control structures,
-      including delimited continuations, in a coherent way to Scheme.
+      including delimited continuations, to Scheme in a coherent way.
       SRFI 226 also contains a rationale for delimited continuations
       and provides many links to existing literature.  Due to its size
       and far-reaching consequences, it does, however, place a burden
@@ -76,7 +76,7 @@
 
     <p>
       This SRFI dispenses with the idea of prompt tags as in other
-      systems for delimited continuation (but it is possible to
+      systems for delimited continuations (but it is possible to
       implement a delimited continuation system with prompt tags with
       it).  If it were not for <code>call/cc</code>, the system could
       dispense with <code>dynamic-wind</code>.
