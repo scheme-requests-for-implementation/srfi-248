@@ -1,3 +1,6 @@
+;;; SPDX-FileCopyrightText: 2025 Marc Nieper-Wißkirchen
+;;; SPDX-License-Identifier: MIT
+
 (import (srfi :248))
 (import (srfi :64))
 (import (rnrs io simple))
