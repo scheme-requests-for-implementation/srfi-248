@@ -4,6 +4,7 @@
 (import (srfi :248))
 (import (srfi :64))
 (import (rnrs io simple))
+(import (rnrs records syntactic))
 (import (rnrs conditions))
 
 (test-begin "SRFI 248")
@@ -188,6 +189,73 @@
     (lambda (f)
       (for-each f '(1 2 3))))
    xcons '()))
+
+;; prompt0 and control0
+
+(define (empty-continuation? k) #f)     ;not supported by Guile, so conservative approximation
+
+(define-condition-type &control-condition &condition
+  make-control-condition control-condition?
+  (control condition-control))
+
+(define-record-type prompt
+  (fields first second))
+
+(define-syntax first
+  (syntax-rules ()
+    ((first e)
+     (call-with-values (lambda () e)
+       (case-lambda
+         ((p)
+          (if (prompt? p)
+              ((prompt-first p))
+              p))
+         (val* (apply values val*)))))))
+
+(define-syntax second
+  (syntax-rules ()
+    ((second e)
+     (call-with-values (lambda () e)
+       (case-lambda
+         ((p) (if (prompt? p)
+                  ((prompt-second p))
+                  p))
+         (val* (apply values val*)))))))
+
+(define-syntax prompt0
+  (syntax-rules ()
+    ((prompt0 e)
+     (second
+       (guard
+           (c k
+             ((control-condition? c)
+              (if (empty-continuation? k)
+                  (make-prompt
+                    (lambda ()
+                      (raise-continuable c))
+                    (lambda ()
+                      ((condition-control c) values)))
+                  (let ((k (lambda arg* (first (apply k arg*)))))
+                    (make-prompt
+                      (lambda ()
+                        (call-with-values
+                            (lambda () (raise-continuable c))
+                          k))
+                      (lambda ()
+                        ((condition-control c) k)))))))
+         e)))))
+
+(define-syntax control0
+  (syntax-rules ()
+    ((control0 k e)
+     (raise-continuable
+       (make-control-condition
+         (lambda (k) e))))))
+
+(test-eqv 1 (prompt0 1))
+(test-eqv 2 (prompt0 (+ 1 (control0 k 2))))
+(test-eqv 4 (prompt0 (+ 1 (control0 k (k (k 2))))))
+(test-eqv 0 (prompt0 (+ 4 (prompt0 (+ 1 (let ((x (control0 k (k 0)))) (control0 l x)))))))
 
 (test-end)
 
