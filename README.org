@@ -1,5 +1,5 @@
 
-# SPDX-FileCopyrightText: 2024 Arthur A. Gleckler
+# SPDX-FileCopyrightText: 2025 Arthur A. Gleckler
 # SPDX-License-Identifier: MIT
 * SRFI 248: Minimal delimited continuations
 
@@ -11,7 +11,7 @@ keywords: [[https://srfi.schemers.org/?keywords=continuations][Continuations]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-248/][SRFI 248]]: Minimal delimited continuations, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
-This SRFI is in /draft/ status.
+This SRFI is in /final/ status.
 See also [[/srfi-226/][SRFI 226: Control Features]].
 The full documentation for this SRFI can be found in the [[https://srfi.schemers.org/srfi-248/srfi-248.html][SRFI Document]].
 
