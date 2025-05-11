@@ -25,7 +25,9 @@
       <li>Draft #3 published: 2024-09-07</li>
       <li>Draft #4 published: 2024-09-13</li>
       <li>Finalized: 2025-01-24</li>
-    </ul>
+      <li>Revised to fix errata:
+        <ul>
+          <li>2024-05-11 (Fixed <a href="#with-unwind-handler-example-2">second example</a> of <code>with-unwind-handler</code>.)</li></ul></li></ul>
 
     <h2 id="abstract">Abstract</h2>
 
@@ -199,13 +201,13 @@
 
     <p>Example:</p>
 
-    <pre>(with-unwind-handler
+    <pre id="with-unwind-handler-example-1">(with-unwind-handler
     (lambda (obj k)
       (empty-continuation? k))
   (lambda ()
-    (raise-continuable 42)))         ; &rArr; #t
+    (raise-continuable 42)))         ; &rArr; #t</pre>
 
-(with-unwind-handler
+    <pre id="with-unwind-handler-example-2">(with-unwind-handler
     (lambda (obj k)
       (empty-continuation? k))
   (lambda ()
