@@ -209,7 +209,7 @@
     (lambda (obj k)
       (empty-continuation? k))
   (lambda ()
-    (not (raise-continuable 42))))   ; &rArr; #t</pre>
+    (not (raise-continuable 42))))   ; &rArr; #f</pre>
 
     <p><code>(with-exception-handler</code> <var>handler</var> <var>thunk</var><code>)</code></p>
 
